@@ -11,3 +11,4 @@ Follow the integration steps for **Pay with Apple Pay integration**:
    - Note: The device must have a sandbox iCloud account logged in, not a production one.
 3. Utilize this repo for testing.
 
+![Demo](https://github.com/rauljr7/apple-pay-acdc-devtools/blob/main/ApplePayviaACDC.gif?raw=true)
