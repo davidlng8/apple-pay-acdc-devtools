@@ -8,7 +8,7 @@
     <title>PayPal ACDC ApplePay Demo</title>
     <style>
       .hide {
-      	display: none !important;
+        display: none !important;
       }
       apple-pay-button {
         --apple-pay-button-width: 300px;
@@ -18,35 +18,47 @@
         --apple-pay-button-box-sizing: border-box;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css"
+    />
     <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
   </head>
   <body>
     <div class="container">
       <h2 id="title">PayPal Advanced - ApplePay</h2>
-        <form id="ppcp_ap">
-            <div class="row">
-                <div class="col">
-                    <div class="ms-form-group">
-                        <label for="client">PayPal Client ID</label>
-                        <input type="text" value="AbAnMDTMIq0lBrP_NV12I9QcU494ZtfLYQcdIk1y_vOae8g24zpO12WAqn5MA8buSahDzR9UrpGls30f" id="client"/>
-                    </div>
-                    <div class="ms-form-group">
-                        <label for="secret">PayPal Secret Key</label>
-                        <input type="text" value="EGaMHuoafSURk8Dl3h_Un0ygj_XP_A_V7Cd3GXLvyVfUAtuidH7PNFpdp-aX_BMR4dBZRUBm-OCIwtHa" id="secret"/>
-                    </div>
-                </div>
-                <div><input type="submit" class="ms-btn ms-fullwidth"/></div>
-            </div>
-        </form>
+      <form id="ppcp_ap">
         <div class="row">
-          <label>Logs:</label>
-          <textarea id="message" style="height:500px"></textarea>
+          <div class="col">
+            <div class="ms-form-group">
+              <label for="client">PayPal Client ID</label>
+              <input
+                type="text"
+                value="AbAnMDTMIq0lBrP_NV12I9QcU494ZtfLYQcdIk1y_vOae8g24zpO12WAqn5MA8buSahDzR9UrpGls30f"
+                id="client"
+              />
+            </div>
+            <div class="ms-form-group">
+              <label for="secret">PayPal Secret Key</label>
+              <input
+                type="text"
+                value="EGaMHuoafSURk8Dl3h_Un0ygj_XP_A_V7Cd3GXLvyVfUAtuidH7PNFpdp-aX_BMR4dBZRUBm-OCIwtHa"
+                id="secret"
+              />
+            </div>
+          </div>
+          <div><input type="submit" class="ms-btn ms-fullwidth" /></div>
         </div>
+      </form>
+      <div class="row">
+        <label>Logs:</label>
+        <textarea id="message" style="height: 500px"></textarea>
+      </div>
       <div id="applepay-container" class="row"></div>
     </div>
     <script>
-        ;(function (window, document, undefined) {
+      (function (window, document, undefined) {
         "use strict";
         const init = () => {
           let client_id = document.getElementById("client");
@@ -56,140 +68,169 @@
           let applepay;
           let pp_order_id;
           let show_message = (string) => {
-            document.getElementById("message").innerHTML = JSON.stringify(string);
+            document.getElementById("message").innerHTML =
+              JSON.stringify(string);
           };
           let append_message = (string) => {
             let temp_message = document.getElementById("message").innerHTML;
-            document.getElementById("message").innerHTML = JSON.stringify(string) + `\n\n-----------------------------------------------\n\n` + temp_message;
+            document.getElementById("message").innerHTML =
+              JSON.stringify(string) +
+              `\n\n-----------------------------------------------\n\n` +
+              temp_message;
           };
           let paypal_api_create_order = async () => {
-          	const url = 'https://api.sandbox.paypal.com/v2/checkout/orders';
+            const url = "https://api.sandbox.paypal.com/v2/checkout/orders";
             const request_body = {
-              "intent": "CAPTURE",
-              "purchase_units": [
+              intent: "CAPTURE",
+              purchase_units: [
                 {
-                  "soft_descriptor": "Janes Gift 80",
-                  "invoice_id": "inv-123",
-                  "amount": {
-                    "currency_code": "USD",
-                    "value": "0.05"
+                  soft_descriptor: "DG Made a change",
+                  invoice_id: "inv-123",
+                  amount: {
+                    currency_code: "USD",
+                    value: "1.75",
                   },
-                  "description": "first stuffs???",
-                  "shipping": {
-                    "address": {
-                      "admin_area_2": "CHANDLER",
-                      "admin_area_1": "AZ",
-                      "postal_code": "85225",
-                      "country_code": "US"
-                    }
-                  }
-                }
+                  description: "Why wont this work?",
+                  /*shipping: {
+                    address: {
+                      admin_area_2: "CHANDLER",
+                      admin_area_1: "AZ",
+                      postal_code: "85225",
+                      country_code: "US",
+                    },
+                  },*/
+                },
               ],
-              "application_context": {
-                "return_url": "https://google.com",
-                "cancel_url": "https://google.com"
-              }
+              application_context: {
+                return_url: "https://google.com",
+                cancel_url: "https://google.com",
+              },
             };
             const credentials = client_id.value + ":" + secret_key.value;
             const base64_credentials = btoa(credentials);
 
             return fetch(url, {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${base64_credentials}`
+                "Content-Type": "application/json",
+                Authorization: `Basic ${base64_credentials}`,
               },
-              body: JSON.stringify(request_body)
+              body: JSON.stringify(request_body),
             })
-            .then(response => response.json())
-            .then((data) => { return data; })
-            .catch((error) => {
-              append_message(error)
-              console.error('Error:', error);
-            });
-            }
+              .then((response) => response.json())
+              .then((data) => {
+                return data;
+              })
+              .catch((error) => {
+                append_message(error);
+                console.error("Error:", error);
+              });
+          };
           let paypal_api_capture_order = async (id) => {
-          	const url = 'https://api.sandbox.paypal.com/v2/checkout/orders/' + id + '/capture';
+            const url =
+              "https://api.sandbox.paypal.com/v2/checkout/orders/" +
+              id +
+              "/capture";
             const credentials = client_id.value + ":" + secret_key.value;
             const base64_credentials = btoa(credentials);
             return fetch(url, {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${base64_credentials}`
-              }
-            })
-            .catch((error) => {
-              append_message(error)
-              console.error('Error:', error);
+                "Content-Type": "application/json",
+                Authorization: `Basic ${base64_credentials}`,
+              },
+            }).catch((error) => {
+              append_message(error);
+              console.error("Error:", error);
             });
-
           };
           let ap_payment_authed = (event) => {
             paypal_api_create_order().then((pp_data) => {
               pp_order_id = pp_data.id;
-              applepay.confirmOrder({
-                orderId: pp_order_id,
-                token: event.payment.token,
-                billingContact: event.payment.billingContact
-              })
-              .then(confirmResult => {
-                append_message(confirmResult)
-                current_ap_session.completePayment(ApplePaySession.STATUS_SUCCESS);
-                paypal_api_capture_order(pp_order_id)
-                .then(() => {
-                  append_message("Captured");
-                  console.log("Captured");
+              applepay
+                .confirmOrder({
+                  orderId: pp_order_id,
+                  token: event.payment.token,
+                  billingContact: event.payment.billingContact,
                 })
-                .catch((captureError) => { console.error(captureError); show_message(captureError)});
-              })
-              .catch(confirmError => {
-                if (confirmError) {
-                  console.error('Error confirming order with applepay token');
-                  console.error(confirmError);
-                  current_ap_session.completePayment(ApplePaySession.STATUS_FAILURE);
-                  show_message(confirmError);
-                }
-              });
+                .then((confirmResult) => {
+                  append_message(confirmResult);
+                  current_ap_session.completePayment(
+                    ApplePaySession.STATUS_SUCCESS
+                  );
+                  paypal_api_capture_order(pp_order_id)
+                    .then(() => {
+                      append_message("Captured");
+                      console.log("Captured");
+                    })
+                    .catch((captureError) => {
+                      console.error(captureError);
+                      show_message(captureError);
+                    });
+                })
+                .catch((confirmError) => {
+                  if (confirmError) {
+                    console.error("Error confirming order with applepay token");
+                    console.error(confirmError);
+                    current_ap_session.completePayment(
+                      ApplePaySession.STATUS_FAILURE
+                    );
+                    show_message(confirmError);
+                  }
+                });
             });
           };
           let ap_validate = (event) => {
-            applepay.validateMerchant({
-              validationUrl: event.validationURL,
-              displayName: "My Demo Company"
-            })
-            .then(validateResult => {
-              append_message(validateResult)
-              console.log(validateResult);
-              current_ap_session.completeMerchantValidation(validateResult.merchantSession);
-            })
-            .catch(validateError => {
-              append_message(validateError)
-              console.error(validateError);
-              current_ap_session.abort();
-            });
+            applepay
+              .validateMerchant({
+                validationUrl: event.validationURL,
+                displayName: "My Demo Company",
+              })
+              .then((validateResult) => {
+                append_message(validateResult);
+                console.log(validateResult);
+                current_ap_session.completeMerchantValidation(
+                  validateResult.merchantSession
+                );
+              })
+              .catch((validateError) => {
+                append_message(validateError);
+                console.error(validateError);
+                current_ap_session.abort();
+              });
           };
           let handle_applepay_clicked = (event) => {
             const payment_request = {
               countryCode: global_apple_pay_config.countryCode,
-              merchantCapabilities: global_apple_pay_config.merchantCapabilities,
+              merchantCapabilities:
+                global_apple_pay_config.merchantCapabilities,
               supportedNetworks: global_apple_pay_config.supportedNetworks,
               currencyCode: "USD",
-              requiredShippingContactFields: ["name", "phone", "email", "postalAddress"],
-              requiredBillingContactFields: ["name", "phone", "email", "postalAddress"],
+              requiredShippingContactFields: [
+                "name",
+                "phone",
+                "email",
+                "postalAddress",
+              ],
+              requiredBillingContactFields: [
+                "name",
+                "phone",
+                "email",
+                "postalAddress",
+              ],
               total: {
                 label: "My Demo Company",
                 type: "final",
                 amount: "0.05",
-              }
+              },
             };
             current_ap_session = new ApplePaySession(4, payment_request);
             current_ap_session.onvalidatemerchant = ap_validate;
             current_ap_session.onpaymentauthorized = ap_payment_authed;
-            current_ap_session.begin()
+            current_ap_session.begin();
           };
           let handle_click = (event) => {
-            switch(event.target.id) {
+            switch (event.target.id) {
               case "applepay_button":
                 handle_applepay_clicked(event);
                 break;
@@ -197,84 +238,98 @@
           };
           let script_to_head = (attributes_object) => {
             return new Promise((resolve, reject) => {
-                const script = document.createElement("script");
-                for (const name of Object.keys(attributes_object)) {
-                  script.setAttribute(name, attributes_object[name]);
-                }
-                document.head.appendChild(script);
-                script.addEventListener("load", resolve);
-                script.addEventListener("error", reject);
-              });
+              const script = document.createElement("script");
+              for (const name of Object.keys(attributes_object)) {
+                script.setAttribute(name, attributes_object[name]);
+              }
+              document.head.appendChild(script);
+              script.addEventListener("load", resolve);
+              script.addEventListener("error", reject);
+            });
           };
           let check_applepay = async () => {
             return new Promise((resolve, reject) => {
-                let error_message = "";
-                if (!window.ApplePaySession) {
-                  error_message = "This device does not support Apple Pay";
-                  ApplePaySession.openPaymentSetup("9E4A9ED362622142EE9B5EC613C94165B51B19A81ED16244A0102F766986182E")
-                  .then(function(success) {
-                  if (success) {
-                    console.log(success)
-                    // Open payment setup successful
-                  } else {
-                    // Open payment setup failed
-                  }
+              let error_message = "";
+              if (!window.ApplePaySession) {
+                error_message = "This device does not support Apple Pay";
+                ApplePaySession.openPaymentSetup(
+                  "9E4A9ED362622142EE9B5EC613C94165B51B19A81ED16244A0102F766986182E"
+                )
+                  .then(function (success) {
+                    if (success) {
+                      console.log(success);
+                      // Open payment setup successful
+                    } else {
+                      // Open payment setup failed
+                    }
                   })
-                  .catch(function(e) {
-                    console.log(e)
-                  // Open payment setup error handling
+                  .catch(function (e) {
+                    console.log(e);
+                    // Open payment setup error handling
                   });
-                } else
-                if (!ApplePaySession.canMakePayments()) {
-                  error_message = "This device, although an Apple device, is not capable of making Apple Pay payments";
-                  ApplePaySession.openPaymentSetup("9E4A9ED362622142EE9B5EC613C94165B51B19A81ED16244A0102F766986182E")
-                  .then(function(success) {
-                  if (success) {
-                    console.log(success)
-                    // Open payment setup successful
-                  } else {
-                    // Open payment setup failed
-                  }
+              } else if (!ApplePaySession.canMakePayments()) {
+                error_message =
+                  "This device, although an Apple device, is not capable of making Apple Pay payments";
+                ApplePaySession.openPaymentSetup(
+                  "9E4A9ED362622142EE9B5EC613C94165B51B19A81ED16244A0102F766986182E"
+                )
+                  .then(function (success) {
+                    if (success) {
+                      console.log(success);
+                      // Open payment setup successful
+                    } else {
+                      // Open payment setup failed
+                    }
                   })
-                  .catch(function(e) {
-                    console.log(e)
-                  // Open payment setup error handling
+                  .catch(function (e) {
+                    console.log(e);
+                    // Open payment setup error handling
                   });
-                }
-                if (error_message !== "") {
-                  reject(error_message);
-                } else {
-                  resolve();
-                }
-              });
+              }
+              if (error_message !== "") {
+                reject(error_message);
+              } else {
+                resolve();
+              }
+            });
           };
           let init_ap = () => {
-            script_to_head({"src": "https://www.paypal.com/sdk/js?client-id=" + client_id.value + "&currency=USD&components=applepay&intent=capture&merchant-id=3DREJHKKVAHXC&buyer-country=US",})
-              .then(() => {
+            script_to_head({
+              src:
+                "https://www.paypal.com/sdk/js?client-id=" +
+                client_id.value +
+                "&currency=USD&components=applepay&intent=capture&merchant-id=3DREJHKKVAHXC&buyer-country=US",
+            }).then(() => {
               //Hide creds area
               document.getElementById("ppcp_ap").classList.add("hide");
               check_applepay()
-              .then(() => {
-                applepay = paypal.Applepay();
-                applepay.config()
-                .then(applepay_config => {
-                  append_message(applepay_config);
-                  if (applepay_config.isEligible) {
-                    document.getElementById("applepay-container").innerHTML = '<apple-pay-button id="applepay_button" buttonstyle="black" type="plain" locale="en">';
-                    global_apple_pay_config = applepay_config;
-                  }
+                .then(() => {
+                  applepay = paypal.Applepay();
+                  applepay
+                    .config()
+                    .then((applepay_config) => {
+                      append_message(applepay_config);
+                      if (applepay_config.isEligible) {
+                        document.getElementById(
+                          "applepay-container"
+                        ).innerHTML =
+                          '<apple-pay-button id="applepay_button" buttonstyle="black" type="plain" locale="en">';
+                        global_apple_pay_config = applepay_config;
+                      }
+                    })
+                    .catch((applepay_config_error) => {
+                      append_message(applepay_config_error);
+                      console.error(
+                        "Error while fetching Apple Pay configuration:"
+                      );
+                      console.error(applepay_config_error);
+                    });
                 })
-                .catch(applepay_config_error => {
-                  append_message(applepay_config_error);
-                  console.error('Error while fetching Apple Pay configuration:');
-                  console.error(applepay_config_error);
-                });
-              })
-              .catch((error) => {
+                .catch((error) => {
                   append_message(error);
-                console.error(error);
-                alert(error);
-              });
+                  console.error(error);
+                  alert(error);
+                });
             });
           };
           let handle_submit = (event) => {
@@ -290,12 +345,12 @@
             document.addEventListener("submit", handle_submit);
           };
           let init_functions = () => {
-              init_listeners();
+            init_listeners();
           };
           init_functions();
         };
         document.addEventListener("DOMContentLoaded", init);
-    })(window, document);
+      })(window, document);
     </script>
   </body>
 </html>
